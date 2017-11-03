@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style type="text/css">
+      /* Slideshow styles */
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+# 艾弗森约定
+
+~~我这么懒的人你就别想看见英文内容了~~
+
+~~当然也只能看到简单题目~~
+---
+## Definition
+`$$
+\begin{eqnarray}
+[P]=
+\begin{cases}
+1, &P\ is\ true \cr 
+0, &otherwise
+\end{cases}
+\end{eqnarray}
+$$`
+
+--
+
+如果 $P$ 是形如 $[x=y]$ 的命题, 那么这东西等同于指示变量了. 
+
+---
+class: center, middle
+## $\mu$
+
+按常见顺序来, 第一位就是 $\mu$ 大佬, 地位相当于 CPU 界的 Intel.
+
+$$
+\sum_{d | n} \mu(d) = [n = 1]
+$$
+
+$\mu$ 就是大家耳熟能详的莫比乌斯函数. 
+
+---
+
+class: middle, center
+
+本质是容斥. 
+
+考虑这么一个问题. 
+
+假如给定一个序列 $b_1, b_2, b_3, ... , b_n$
+
+想问有多少种序列 $a_1, a_2, a_3,..., a_n (1 \le a_i \le b_i)$, 
+
+使得 $gcd(a_1, a_2, a_3, ... , a_n) = 1$ 
+
+---
+
+class: center, middle
+
+$g(x)$ 为 $gcd(a_1, a_2, a_3, ... , a_n)$ 是 $x$ 的倍数的序列个数. 
+
+$f(x)$ 为 $gcd(a_1, a_2, a_3, ... , a_n)$ **恰好**是 $x$ 的倍数的序列个数. 
+
+要求的就是 $f(1)$
+
+---
+
+class: center, middle
+
+显然的一点是 $g(x) = f(x) + f(2x) + f(3x) + ... $
+
+可能不那么显然的是 $f(x) = g(x) - f(2x) - f(3x) - ... $
+
+把 $f(1) = g(1) - f(2) - f(3) - ... $ 中的 $f$ 依次展开, 就得到了
+
+$f(1) = g(1) - g(2) - g(3) - g(5) + g(6) ... $
+
+$g(i)$ 前面的系数就是 $\mu(i)$, 取值只有 $\pm 1$ 和0
+
+---
+
+然后我们用另一种容斥思维来思考. 
+
+我们要得到 $f(1)$, 就要用 $g(1)$ 减去 $g(2), g(3), g(5), g(7)... $, 然后再把 $g(2 \cdot 3), g(2 \cdot 5), g(3 \cdot 5)... $ 这些补回来, 然后再减去 $g(2 \cdot 3 \cdot 5)... $
+
+所以有
+
+$$
+f(1) = g(1) - g(2) - g(3) - g(5) + g(2 \cdot 3) - g(7) + g(2 \cdot 5) .... 
+$$
+
+---
+
+class: center, middle
+
+对比两种形式, 对于 $n=p^{r_1}_1p^{r_2}_2..p^{r_k}_k$我们就得到了
+
+$$
+\begin{eqnarray}
+\mu(n)=
+\begin{cases}
+1, &k\ is\ even \cap \forall r_i=1 \cr 
+0, &\exists r_i \ge 2 \cr
+-1, &k\ is\ odd \cap \forall r_i=1
+\end{cases}
+\end{eqnarray}
+$$
+
+---
+
+class: center, middle
+
+然后再来看
+
+$$
+\sum_{d | n} \mu(d) = [n = 1]
+$$
+
+对于 $n=p^{r_1}_1p^{r_2}_2..p^{r_k}_k$, 其实代入上式的结果和代入 $n^{'}=p_1p_2...p_k$ 是一样的. 
+
+然后写成
+
+`\[\sum_{d | \frac{n^{'}}{p_1}} (\mu(d) + \mu(p_1d)) = \sum_{d | \frac{n^{'}}{p_1}} (\mu(d) - \mu(d))\]`
+
+这东西只有在 $n^{'} \ne 1$ 的时候等于 $0$, $1$ 的情况原和式就是 $\mu(1)=1$
+
+---
+
+## Prob 1
+
+有一个序列 $a_1, a_2, a_3, ... , a_n$. 有若干询问, 每次给一个数 $x$. 
+
+求 
+
+$$
+\sum_{i \ge 1}^{n} a_i[(i, x) = 1]
+$$
+
+--
+
+`$$
+\begin{equation}
+\begin{split} 
+\sum_{i \ge 1}^{n} a_i[(i, x) = 1] &=\sum_{i \ge 1}^{n} a_i\sum_{j | i, j | x} \mu(j) \\ 
+&=\sum_{j | x} \mu(j) \sum_{i^{'} = 1}^{\lfloor \frac{n}{j} \rfloor} a_{ji^{'}}
+\end{split}
+\end{equation}
+$$`
+
+对每个 $j$ 预处理就好了. 
+
+---
+
+## Prob 2
+
+求
+`$$
+\sum_{i=1}^{n}\sum_{j=1}^{m} (i, j)
+$$`
+
+$n, m \le 10^5$
+
+---
+
+设 $d=(i, j)$
+
+原式可以变成
+
+`$$
+\begin{equation}
+\begin{split}
+&\quad \sum_{d=1}^{n} d\sum_{i=1}^{\lfloor \frac{n}{d} \rfloor} \sum_{j=1}^{\lfloor \frac{m}{d} \rfloor} [(i, j) = 1] \\
+&=\sum_{d=1}^{n} d\sum_{i=1}^{\lfloor \frac{n}{d} \rfloor} \sum_{j=1}^{\lfloor \frac{m}{d} \rfloor} \sum_{r | i, r | j} \mu(r) \\
+&=\sum_{d=1}^{n} d\sum_{r \ge 1} \mu(r) \lfloor \frac{n}{dr} \rfloor \lfloor \frac{m}{dr} \rfloor
+\end{split}
+\end{equation}
+$$`
+
+---
+
+~~本来我以为这道题不需要用到反演但写着写着发现要所以写一下吧~~
+
+~~讲真, 这个反演真的被用烂了~~
+
+--
+
+## Mobius 反演. Version 1.0.
+
+`$$
+f(n) = \sum_{d | n} g(n) \leftrightarrow g(n) = \sum_{d | n} f(d) \mu(\frac{n}{d})
+$$`
+
+~~啊? 证明? 自己推一下就好了~~
+
+--
+
+因为
+$$
+n = \sum_{d | n} \phi(d)
+$$
+
+所以有
+$$
+\phi(n) = \sum_{d | n} d \mu(\frac{n}{d})
+$$
+
+---
+令 $s = dr$. 
+
+`$$
+\begin{equation}
+\begin{split}
+&\quad \sum_{d=1}^{n} d\sum_{r \ge 1} \mu(r) \lfloor \frac{n}{dr} \rfloor \lfloor \frac{m}{dr} \rfloor \\
+&=\sum_{s=1}^{n} \lfloor \frac{n}{s} \rfloor \lfloor \frac{m}{s} \rfloor \sum_{d | n} d \mu(\frac{s}{d}) \\
+&=\sum_{s=1}^{n} \lfloor \frac{n}{s} \rfloor \lfloor \frac{m}{s} \rfloor \phi(s)
+\end{split}
+\end{equation}
+$$`
+
+---
+class: middle, center
+跑偏了跑偏了, 先来看一下我们现在能拆开哪种形式的艾弗森约定.
+
+> `$[n=1]$`
+> `$[(x, y) = 1]$`
+
+---
+
+## 多项式乘法
+
+我们还能解决这样形式的艾弗森约定. 
+
+$$
+[x - y = z], [x + y = z]
+$$
+
+---
+
+考虑这样一个问题:
+
+求:
+
+`$$
+\sum_{i = 1}^{n} \sum_{j = 1}^{m} a_i b_j [i - j = k]
+$$`
+
+其中 $k$ 为给定的常数, 可能会对很多 $k$ 进行询问. $a_i, b_i$ 为给出的序列. 
+
+---
+
+定义这样两个多项式:
+
+$$
+A(x) = a_1 x^1 + a_2 x^2 + a_3 x^3 + ... + a_n x^n
+$$
+
+$$
+B(x) = b_1 x^{-1} + b_2 x^{-2} + b_3 x^{-3} + ... + b_n x^{-n}
+$$
+
+那么 $A(x)B(x)$ 中 $x^k$ 项的系数就是答案. 
+
+跑 FFT 就好了. 
+
+---
+
+考虑这么一个问题, 就是今天多校第一题的弱化版:
+
+给出序列 $a, b$, 每次询问给出一个 $w$, 回答有多少对 $(i, j)$ 满足 $a_i - tb_j = w$, 其中 $t$ 可以是任意正整数. 
+
+这样子对于每个 $b_i$, 枚举一下 $t$, 就变成了 `$[a_i - x = w]$` 这样的形式的计数了, 其中 `$x = tb_i$`. 
+
+然后上 FFT 就好了. 
+
+---
+
+我们还见过同样的应用, 是多校第三场的1002.
+`$$
+C_k=\sum_{i\  and\  j=k}A_{i\ xor\ j} B_{i\ or\ j}
+$$`
+这里的要点是 `$[a\ and\ b = b]$` 可以化成 `$[bits(a) - bits(b) = bits(a\ xor\ b)]$`
+
+    </textarea>
+    <script src="http://gnab.github.io/remark/downloads/remark-latest.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML&delayStartupUntil=configured" type="text/javascript"></script>
+    <script type="text/javascript">
+      var slideshow = remark.create();
+
+      // Setup MathJax
+      MathJax.Hub.Config({
+          tex2jax: {
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+          inlineMath:  [ ["$", "$"], ["\\(", "\\)"] ],
+          displayMath: [ ["$$","$$"], ["\\[", "\\]"] ],        }
+      });
+
+      MathJax.Hub.Configured();
+    </script>
+  </body>
+</html>
